@@ -1,0 +1,32 @@
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.DataFrame({
+    "Hours": [1, 2, 3, 4, 5],
+    "Marks": [20, 30, 40, 50, 60]
+})
+
+print("Dataset:")
+print(data)
+
+print("\nCovariance Matrix:")
+print(data.cov())
+
+A = np.array([[2, 1], [1, 2]])
+
+values, vectors = np.linalg.eig(A)
+
+print("\nEigenvalues:")
+print(values)
+
+print("\nEigenvectors:")
+print(vectors)
+
+plt.scatter(data["Hours"], data["Marks"])
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.title("Study Hours vs Marks")
+plt.grid()
+plt.show()

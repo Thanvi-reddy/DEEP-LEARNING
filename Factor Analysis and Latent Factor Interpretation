@@ -1,0 +1,22 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import FactorAnalysis
+
+data = load_iris()
+X = StandardScaler().fit_transform(data.data)
+fa = FactorAnalysis(n_components=2, random_state=42)
+factors = fa.fit_transform(X)
+
+print("First five latent factor scores:")
+print(pd.DataFrame(factors, columns=["Factor 1", "Factor 2"]).head().round(3))
+print("\nFactor loadings:")
+print(pd.DataFrame(fa.components_, columns=data.feature_names,
+                   index=["Factor 1", "Factor 2"]).round(3))
+
+plt.scatter(factors[:, 0], factors[:, 1], c=data.target)
+plt.xlabel("Factor 1")
+plt.ylabel("Factor 2")
+plt.title("Factor Analysis of Iris Data")
+plt.show()

@@ -1,0 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import entropy
+
+p = np.array([0.7, 0.3])
+q = np.array([0.5, 0.5])
+
+H_p = entropy(p, base=2)
+cross_entropy = -np.sum(p * np.log2(q))
+kl_divergence = entropy(p, q, base=2)
+
+print("Entropy:", round(H_p, 4))
+print("Cross-Entropy:", round(cross_entropy, 4))
+print("KL Divergence:", round(kl_divergence, 4))
+
+labels = ["Class A", "Class B"]
+positions = np.arange(len(labels))
+width = 0.35
+
+plt.bar(positions - width/2, p, width, label="Actual")
+plt.bar(positions + width/2, q, width, label="Predicted")
+plt.xticks(positions, labels)
+plt.ylabel("Probability")
+plt.title("Actual vs Predicted Probabilities")
+plt.legend()
+plt.show()

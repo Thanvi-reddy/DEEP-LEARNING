@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import keras_tuner as kt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Dense
+
+np.random.seed(42)
+data = np.sin(np.arange(160, dtype=np.float32) * 0.1)
+X = np.array([data[i:i+10] for i in range(len(data)-10)])
+y = data[10:]
+X = X.reshape((X.shape[0], 10, 1))
+
+def build_model(hp, cell):
+    units = hp.Choice("units", values=[8, 16, 32])
+    model = Sequential([cell(units, input_shape=(10, 1)), Dense(1)])
+    model.compile(optimizer="adam", loss="mse")
+    return model
+
+results = {}
+for name, cell in [("RNN", SimpleRNN), ("LSTM", LSTM), ("GRU", GRU)]:
+    tuner = kt.RandomSearch(
+        hypermodel=lambda hp, cell=cell: build_model(hp, cell),
+        objective="val_loss",
+        max_trials=2,
+        overwrite=True,
+        directory="colab_tuner",
+        project_name=name
+    )
+    tuner.search(X, y, epochs=3, validation_split=0.2,
+                 batch_size=16, verbose=0)
+    best_hp = tuner.get_best_hyperparameters(1)[0]
+    best_model = tuner.get_best_models(1)[0]
+    loss = best_model.evaluate(X, y, verbose=0)
+    results[name] = loss
+    print(f"{name}: best units={best_hp.get('units')}, MSE={loss:.4f}")
+
+plt.bar(list(results.keys()), list(results.values()))
+plt.ylabel("MSE")
+plt.title("RNN, LSTM and GRU Hyperparameter Comparison")
+plt.show()

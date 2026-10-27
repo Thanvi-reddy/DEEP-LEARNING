@@ -1,0 +1,28 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.metrics import mean_squared_error
+
+X = StandardScaler().fit_transform(load_iris().data)
+
+# PCA has a probabilistic latent-variable interpretation (PPCA).
+# This code demonstrates the 2-component latent representation and reconstruction.
+pca = PCA(n_components=2, svd_solver="full")
+Z = pca.fit_transform(X)
+X_reconstructed = pca.inverse_transform(Z)
+
+print("Original shape:", X.shape)
+print("Latent representation shape:", Z.shape)
+print("Reconstructed shape:", X_reconstructed.shape)
+print("Reconstruction MSE:", round(mean_squared_error(X, X_reconstructed), 4))
+print("Explained variance:", round(float(pca.explained_variance_ratio_.sum()), 4))
+
+plt.scatter(X[:, 0], X[:, 1], label="Original", alpha=0.6)
+plt.scatter(X_reconstructed[:, 0], X_reconstructed[:, 1],
+            label="Reconstructed", alpha=0.6)
+plt.xlabel("Standardized feature 1")
+plt.ylabel("Standardized feature 2")
+plt.title("PCA / PPCA Reconstruction")
+plt.legend()
+plt.show()

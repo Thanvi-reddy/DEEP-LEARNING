@@ -1,0 +1,25 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+gradients = [
+    tf.constant(25.0), tf.constant(-18.0),
+    tf.constant(40.0), tf.constant(2.0)
+]
+clipped, global_norm = tf.clip_by_global_norm(gradients, 5.0)
+
+original = [float(g.numpy()) for g in gradients]
+limited = [float(g.numpy()) for g in clipped]
+
+print("Original gradients:", original)
+print("Original global norm:", round(float(global_norm.numpy()), 4))
+print("Clipped gradients:", [round(v, 4) for v in limited])
+
+indices = range(len(original))
+plt.plot(indices, original, marker="o", label="Original")
+plt.plot(indices, limited, marker="s", label="Clipped")
+plt.xlabel("Gradient index")
+plt.ylabel("Gradient value")
+plt.title("Gradient Clipping")
+plt.legend()
+plt.grid(True)
+plt.show()

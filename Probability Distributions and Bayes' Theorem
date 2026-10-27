@@ -1,0 +1,29 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import binom
+
+n = 10
+p = 0.5
+
+x = np.arange(0, n + 1)
+prob = binom.pmf(x, n, p)
+
+print("Probability of exactly 5 successes:")
+print(round(binom.pmf(5, n, p), 4))
+
+plt.bar(x, prob)
+plt.xlabel("Number of Successes")
+plt.ylabel("Probability")
+plt.title("Binomial Probability Distribution")
+plt.grid(axis="y")
+plt.show()
+
+P_A = 0.01
+P_B_given_A = 0.90
+P_B_given_not_A = 0.05
+
+P_B = P_B_given_A * P_A + P_B_given_not_A * (1 - P_A)
+P_A_given_B = P_B_given_A * P_A / P_B
+
+print("Bayes Theorem Result:", round(P_A_given_B, 4))
+print("Percentage:", round(P_A_given_B * 100, 2), "%")

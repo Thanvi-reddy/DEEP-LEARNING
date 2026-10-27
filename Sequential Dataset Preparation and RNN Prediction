@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+
+data = np.arange(1, 101, dtype=float)
+X = np.array([data[i:i+5] for i in range(95)])
+y = data[5:]
+
+X = X.reshape(-1, 5, 1)
+
+model = Sequential([
+    SimpleRNN(16, input_shape=(5, 1)),
+    Dense(1)
+])
+model.compile(optimizer="adam", loss="mse")
+model.fit(X, y, epochs=10, verbose=0)
+
+pred = model.predict(X[-1:], verbose=0)
+print("Actual:", y[-1])
+print("Predicted:", pred[0][0])
+
+plt.plot(y[-10:], label="Actual")
+plt.plot(model.predict(X[-10:], verbose=0),
+         label="Predicted")
+plt.legend()
+plt.show()

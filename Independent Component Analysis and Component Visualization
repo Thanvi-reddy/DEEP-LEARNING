@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import FastICA
+
+data = load_iris()
+X = StandardScaler().fit_transform(data.data)
+ica = FastICA(n_components=2, random_state=42,
+              max_iter=2000, tol=0.01)
+components = ica.fit_transform(X)
+
+print("Original shape:", X.shape)
+print("ICA component shape:", components.shape)
+print("First five component rows:")
+print(components[:5].round(3))
+
+plt.scatter(components[:, 0], components[:, 1], c=data.target)
+plt.xlabel("Independent component 1")
+plt.ylabel("Independent component 2")
+plt.title("ICA Component Visualization")
+plt.show()

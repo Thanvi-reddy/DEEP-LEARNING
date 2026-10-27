@@ -1,0 +1,26 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+inputs = np.array([1, 0, 1])
+weights = np.array([0.5, 0.4, 0.7])
+bias = -0.6
+
+weighted_sum = np.dot(inputs, weights) + bias
+
+output = 1 if weighted_sum >= 0 else 0
+
+print("Inputs:", inputs)
+print("Weights:", weights)
+print("Bias:", bias)
+print("Weighted Sum:", weighted_sum)
+print("Perceptron Output:", output)
+
+plt.bar(["Input 1", "Input 2", "Input 3"],
+        inputs * weights)
+
+plt.title("Perceptron: Weighted Inputs")
+plt.xlabel("Inputs")
+plt.ylabel("Weighted Value")
+plt.grid(axis="y")
+plt.show()

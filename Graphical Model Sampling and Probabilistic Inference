@@ -1,0 +1,26 @@
+import matplotlib.pyplot as plt
+from pgmpy.sampling import BayesianModelSampling
+from pgmpy.inference import VariableElimination
+
+# Run Experiment 23 first, so the variable 'model' exists.
+sampler = BayesianModelSampling(model)
+samples = sampler.forward_sample(size=1000, seed=42, show_progress=False)
+
+print("First 10 samples:")
+print(samples.head(10).to_string(index=False))
+
+p_rain = (samples["Rain"] == 1).mean()
+print("\nEstimated P(Rain=1):", round(float(p_rain), 3))
+
+infer = VariableElimination(model)
+query = infer.query(variables=["Rain"], evidence={"WetGrass": 1})
+print("\nP(Rain | WetGrass=1):")
+print(query)
+
+counts = samples["Rain"].value_counts().reindex([0, 1], fill_value=0)
+counts.index = ["No Rain (0)", "Rain (1)"]
+counts.plot(kind="bar")
+plt.ylabel("Sample count")
+plt.title("Bayesian Network: Sampled Rain States")
+plt.xticks(rotation=0)
+plt.show()

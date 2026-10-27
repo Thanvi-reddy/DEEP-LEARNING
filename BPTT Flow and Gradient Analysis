@@ -1,0 +1,23 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+W = tf.Variable(0.5, dtype=tf.float32)
+x_values = [1.0, 2.0, 3.0, 4.0]
+
+with tf.GradientTape() as tape:
+    h = tf.constant(0.0)
+    for x in x_values:
+        h = tf.tanh(W * x + h)
+    loss = tf.square(h - 1.0)
+
+gradient = tape.gradient(loss, W)
+
+print("Final hidden state:", round(float(h.numpy()), 6))
+print("Loss:", round(float(loss.numpy()), 6))
+print("Gradient dLoss/dW:", round(float(gradient.numpy()), 6))
+
+plt.bar(["Loss", "Absolute gradient"],
+        [float(loss.numpy()), abs(float(gradient.numpy()))])
+plt.title("BPTT Gradient Analysis")
+plt.ylabel("Value")
+plt.show()

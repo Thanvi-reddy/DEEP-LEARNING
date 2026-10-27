@@ -1,0 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, LSTM, Dense
+
+np.random.seed(42)
+data = np.sin(np.arange(200, dtype=np.float32) * 0.1)
+X = np.array([data[i:i+10] for i in range(len(data)-10)])
+y = data[10:]
+X = X.reshape((X.shape[0], 10, 1))
+
+losses = {}
+for name, layer in [("RNN", SimpleRNN(16)), ("LSTM", LSTM(16))]:
+    model = Sequential([layer, Dense(1)])
+    model.compile(optimizer="adam", loss="mse")
+    history = model.fit(X, y, epochs=5, batch_size=16, verbose=0)
+    losses[name] = history.history["loss"]
+    print(f"{name} final training loss: {losses[name][-1]:.4f}")
+
+for name, values in losses.items():
+    plt.plot(range(1, len(values)+1), values, marker="o", label=name)
+plt.xlabel("Epoch")
+plt.ylabel("Training MSE loss")
+plt.title("RNN vs LSTM")
+plt.legend()
+plt.show()

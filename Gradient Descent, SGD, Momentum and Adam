@@ -1,0 +1,52 @@
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+X = np.linspace(-1, 1, 200).reshape(-1, 1).astype("float32")
+y = (3 * X + 2).astype("float32")
+
+optimizers = {
+    "Gradient Descent": lambda: tf.keras.optimizers.SGD(
+        learning_rate=0.01
+    ),
+    "SGD": lambda: tf.keras.optimizers.SGD(
+        learning_rate=0.01
+    ),
+    "Momentum": lambda: tf.keras.optimizers.SGD(
+        learning_rate=0.01, momentum=0.9
+    ),
+    "Adam": lambda: tf.keras.optimizers.Adam(
+        learning_rate=0.01
+    )
+}
+
+results = {}
+
+for name, optimizer_fn in optimizers.items():
+    tf.keras.backend.clear_session()
+    tf.random.set_seed(42)
+
+    model = tf.keras.Sequential([
+        tf.keras.Input(shape=(1,)),
+        tf.keras.layers.Dense(1)
+    ])
+
+    model.compile(optimizer=optimizer_fn(), loss="mse")
+    history = model.fit(X, y, epochs=50, verbose=0)
+
+    results[name] = history.history["loss"]
+
+    print(name)
+    print("Final Loss:", round(results[name][-1], 6))
+
+for name, losses in results.items():
+    plt.plot(losses, label=name)
+
+plt.xlabel("Epoch")
+plt.ylabel("Mean Squared Error")
+plt.title("Optimizer Comparison")
+plt.legend()
+plt.grid()
+plt.show()
